@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/p9c/opts/meta"
-	"github.com/p9c/opts/opt"
-	"github.com/p9c/opts/sanitizers"
+	"github.com/cybriq/opts/meta"
+	"github.com/cybriq/opts/opt"
+	"github.com/cybriq/opts/sanitizers"
 
 	uberatomic "go.uber.org/atomic"
 )
@@ -65,10 +65,10 @@ func (x *Opt) ReadInput(input string) (o opt.Option, e error) {
 		input = strings.Join(strings.Split(input, "=")[1:], "=")
 	}
 	var v float64
-	if v, e = strconv.ParseFloat(input, 64); E.Chk(e) {
+	if v, e = strconv.ParseFloat(input, 64); log.E.Chk(e) {
 		return
 	}
-	if e = x.Set(v); E.Chk(e) {
+	if e = x.Set(v); log.E.Chk(e) {
 	}
 	return x, e
 }
@@ -100,7 +100,7 @@ func (x *Opt) V() float64 {
 
 func (x *Opt) runHooks(f float64) (e error) {
 	for i := range x.hook {
-		if e = x.hook[i](f); E.Chk(e) {
+		if e = x.hook[i](f); log.E.Chk(e) {
 			break
 		}
 	}
@@ -110,7 +110,7 @@ func (x *Opt) runHooks(f float64) (e error) {
 // Set the value stored
 func (x *Opt) Set(f float64) (e error) {
 	f = x.clamp(f)
-	if e = x.runHooks(f); !E.Chk(e) {
+	if e = x.runHooks(f); !log.E.Chk(e) {
 		x.Value.Store(f)
 	}
 	return

@@ -6,11 +6,11 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/p9c/opts/normalize"
+	"github.com/cybriq/opts/normalize"
 
-	"github.com/p9c/opts/meta"
-	"github.com/p9c/opts/opt"
-	"github.com/p9c/opts/sanitizers"
+	"github.com/cybriq/opts/meta"
+	"github.com/cybriq/opts/opt"
+	"github.com/cybriq/opts/sanitizers"
 )
 
 // Opt stores a string slice configuration value
@@ -61,25 +61,25 @@ func (x *Opt) ReadInput(input string) (o opt.Option, e error) {
 		split := strings.Split(input, ",")
 		for i := range split {
 			var cleaned string
-			if cleaned, e = sanitizers.StringType(x.Data.Type, split[i], x.Data.DefaultPort); E.Chk(e) {
+			if cleaned, e = sanitizers.StringType(x.Data.Type, split[i], x.Data.DefaultPort); log.E.Chk(e) {
 				return
 			}
 			if cleaned != "" {
-				I.Ln("setting value for", x.Data.Name, cleaned)
+				log.I.Ln("setting value for", x.Data.Name, cleaned)
 				split[i] = cleaned
 			}
 		}
 		e = x.Set(append(slice, split...))
 	} else {
 		var cleaned string
-		if cleaned, e = sanitizers.StringType(x.Data.Type, input, x.Data.DefaultPort); E.Chk(e) {
+		if cleaned, e = sanitizers.StringType(x.Data.Type, input, x.Data.DefaultPort); log.E.Chk(e) {
 			return
 		}
 		if cleaned != "" {
-			I.Ln("setting value for", x.Data.Name, cleaned)
+			log.I.Ln("setting value for", x.Data.Name, cleaned)
 			input = cleaned
 		}
-		if e = x.Set(append(slice, input)); E.Chk(e) {
+		if e = x.Set(append(slice, input)); log.E.Chk(e) {
 		}
 
 	}
@@ -92,7 +92,7 @@ func (x *Opt) ReadInput(input string) (o opt.Option, e error) {
 func (x *Opt) LoadInput(input string) (o opt.Option, e error) {
 	old := x.V()
 	_ = x.Set([]string{})
-	if o, e = x.ReadInput(input); E.Chk(e) {
+	if o, e = x.ReadInput(input); log.E.Chk(e) {
 		// if input failed to parse, restore its prior state
 		_ = x.Set(old)
 	}
@@ -126,7 +126,7 @@ func (x *Opt) Len() int {
 
 func (x *Opt) runHooks(s []string) (e error) {
 	for i := range x.hook {
-		if e = x.hook[i](s); E.Chk(e) {
+		if e = x.hook[i](s); log.E.Chk(e) {
 			break
 		}
 	}
@@ -135,7 +135,7 @@ func (x *Opt) runHooks(s []string) (e error) {
 
 // Set the slice of strings stored
 func (x *Opt) Set(ss []string) (e error) {
-	if e = x.runHooks(ss); !E.Chk(e) {
+	if e = x.runHooks(ss); !log.E.Chk(e) {
 		x.Value.Store(ss)
 	}
 	return

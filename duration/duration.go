@@ -8,9 +8,9 @@ import (
 
 	uberatomic "go.uber.org/atomic"
 
-	"github.com/p9c/opts/meta"
-	"github.com/p9c/opts/opt"
-	"github.com/p9c/opts/sanitizers"
+	"github.com/cybriq/opts/meta"
+	"github.com/cybriq/opts/opt"
+	"github.com/cybriq/opts/sanitizers"
 )
 
 // Opt stores an time.Duration configuration value
@@ -65,10 +65,10 @@ func (x *Opt) ReadInput(input string) (o opt.Option, e error) {
 		input = strings.Join(strings.Split(input, "=")[1:], "=")
 	}
 	var v time.Duration
-	if v, e = time.ParseDuration(input); E.Chk(e) {
+	if v, e = time.ParseDuration(input); log.E.Chk(e) {
 		return
 	}
-	if e = x.Set(v); E.Chk(e) {
+	if e = x.Set(v); log.E.Chk(e) {
 	}
 	return
 }
@@ -100,7 +100,7 @@ func (x *Opt) V() time.Duration {
 
 func (x *Opt) runHooks(d time.Duration) (e error) {
 	for i := range x.hook {
-		if e = x.hook[i](d); E.Chk(e) {
+		if e = x.hook[i](d); log.E.Chk(e) {
 			break
 		}
 	}
@@ -110,7 +110,7 @@ func (x *Opt) runHooks(d time.Duration) (e error) {
 // Set the value stored
 func (x *Opt) Set(d time.Duration) (e error) {
 	d = x.clamp(d)
-	if e = x.runHooks(d); !E.Chk(e) {
+	if e = x.runHooks(d); !log.E.Chk(e) {
 		x.Value.Store(d)
 	}
 	return

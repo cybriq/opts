@@ -17,7 +17,7 @@ type Command struct {
 
 func (c Commands) PopulateParents(parent *Command) {
 	if parent != nil {
-		T.Ln("backlinking children of", parent.Name)
+		log.T.Ln("backlinking children of", parent.Name)
 	}
 	for i := range c {
 		c[i].Parent = parent
@@ -49,36 +49,36 @@ func (c Commands) Find(
 		return
 	}
 	if hereDist == 0 {
-		D.Ln("searching for command:", name)
+		log.D.Ln("searching for command:", name)
 	}
 	depth = hereDepth + 1
-	T.Ln(tabs[:depth]+"->", depth)
+	log.T.Ln(tabs[:depth]+"->", depth)
 	dist = hereDist
 	for i := range c {
-		T.Ln(tabs[:depth]+"walking", c[i].Name, depth, dist)
+		log.T.Ln(tabs[:depth]+"walking", c[i].Name, depth, dist)
 		dist++
 		if c[i].Name == name {
 			if skipFirst {
 				continue
 			}
 			dist--
-			T.Ln(tabs[:depth]+"found", name, "at depth", depth, "distance", dist)
+			log.T.Ln(tabs[:depth]+"found", name, "at depth", depth, "distance", dist)
 			found = true
 			cm = &c[i]
 			e = nil
 			return
 		}
-		if found, depth, dist, cm, e = c[i].Commands.Find(name, depth, dist, false); E.Chk(e) {
-			T.Ln(tabs[:depth]+"error", c[i].Name)
+		if found, depth, dist, cm, e = c[i].Commands.Find(name, depth, dist, false); log.E.Chk(e) {
+			log.T.Ln(tabs[:depth]+"error", c[i].Name)
 			return
 		}
 		if found {
 			return
 		}
 	}
-	T.Ln(tabs[:hereDepth]+"<-", hereDepth)
+	log.T.Ln(tabs[:hereDepth]+"<-", hereDepth)
 	if hereDepth == 0 {
-		D.Ln("search text", name, "not found")
+		log.D.Ln("search text", name, "not found")
 	}
 	depth--
 	return
@@ -91,16 +91,16 @@ func (c Commands) ForEach(fn func(Command) bool, hereDepth, hereDist int) (ret b
 		return
 	}
 	depth = hereDepth + 1
-	T.Ln(tabs[:depth]+"->", depth)
+	log.T.Ln(tabs[:depth]+"->", depth)
 	dist = hereDist
 	for i := range c {
-		T.Ln(tabs[:depth]+"walking", c[i].Name, depth, dist)
+		log.T.Ln(tabs[:depth]+"walking", c[i].Name, depth, dist)
 		if !fn(c[i]) {
 			// if the closure returns false break out of the loop
 			return
 		}
 	}
-	T.Ln(tabs[:hereDepth]+"<-", hereDepth)
+	log.T.Ln(tabs[:hereDepth]+"<-", hereDepth)
 	depth--
 	return
 }

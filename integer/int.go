@@ -8,9 +8,9 @@ import (
 
 	uberatomic "go.uber.org/atomic"
 
-	"github.com/p9c/opts/meta"
-	"github.com/p9c/opts/opt"
-	"github.com/p9c/opts/sanitizers"
+	"github.com/cybriq/opts/meta"
+	"github.com/cybriq/opts/opt"
+	"github.com/cybriq/opts/sanitizers"
 )
 
 // Opt stores an int configuration value
@@ -65,10 +65,10 @@ func (x *Opt) ReadInput(input string) (o opt.Option, e error) {
 		input = strings.Join(strings.Split(input, "=")[1:], "=")
 	}
 	var v int64
-	if v, e = strconv.ParseInt(input, 10, 64); E.Chk(e) {
+	if v, e = strconv.ParseInt(input, 10, 64); log.E.Chk(e) {
 		return
 	}
-	if e = x.Set(int(v)); E.Chk(e) {
+	if e = x.Set(int(v)); log.E.Chk(e) {
 	}
 	return x, e
 }
@@ -100,7 +100,7 @@ func (x *Opt) V() int {
 
 func (x *Opt) runHooks(ii int) (e error) {
 	for i := range x.hook {
-		if e = x.hook[i](ii); E.Chk(e) {
+		if e = x.hook[i](ii); log.E.Chk(e) {
 			break
 		}
 	}
@@ -110,7 +110,7 @@ func (x *Opt) runHooks(ii int) (e error) {
 // Set the value stored
 func (x *Opt) Set(i int) (e error) {
 	i = x.clamp(i)
-	if e = x.runHooks(i); !E.Chk(e) {
+	if e = x.runHooks(i); !log.E.Chk(e) {
 		x.Value.Store(int64(i))
 	}
 	return

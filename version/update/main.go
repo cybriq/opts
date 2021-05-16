@@ -12,7 +12,7 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/storer"
 
-	"github.com/p9c/opts/version"
+	"github.com/cybriq/opts/version"
 )
 
 var (
@@ -27,21 +27,21 @@ var (
 )
 
 func main() {
-	I.Ln(version.Get())
+	log.I.Ln(version.Get())
 	BuildTime = time.Now().Format(time.RFC3339)
 	var cwd string
 	var e error
-	if cwd, e = os.Getwd(); E.Chk(e) {
+	if cwd, e = os.Getwd(); log.E.Chk(e) {
 		return
 	}
 	cwd = filepath.Dir(cwd)
 	// I.Ln(cwd)
 	var repo *git.Repository
-	if repo, e = git.PlainOpen(cwd); E.Chk(e) {
+	if repo, e = git.PlainOpen(cwd); log.E.Chk(e) {
 		return
 	}
 	var rr []*git.Remote
-	if rr, e = repo.Remotes(); E.Chk(e) {
+	if rr, e = repo.Remotes(); log.E.Chk(e) {
 		return
 	}
 	for i := range rr {
@@ -63,17 +63,17 @@ func main() {
 		}
 	}
 	var tr *git.Worktree
-	if tr, e = repo.Worktree(); E.Chk(e) {
+	if tr, e = repo.Worktree(); log.E.Chk(e) {
 	}
 	var rh *plumbing.Reference
-	if rh, e = repo.Head(); E.Chk(e) {
+	if rh, e = repo.Head(); log.E.Chk(e) {
 		return
 	}
 	rhs := rh.Strings()
 	GitRef = rhs[0]
 	GitCommit = rhs[1]
 	var rt storer.ReferenceIter
-	if rt, e = repo.Tags(); E.Chk(e) {
+	if rt, e = repo.Tags(); log.E.Chk(e) {
 		return
 	}
 	var maxVersion int
@@ -103,7 +103,7 @@ func main() {
 			}
 			return
 		},
-	); E.Chk(e) {
+	); log.E.Chk(e) {
 		return
 	}
 	if !maxIs {
@@ -114,7 +114,7 @@ func main() {
 	// I.Ln(PathBase)
 	versionFile := `package version
 
-`+`//go:generate go run ./update/.
+` + `//go:generate go run ./update/.
 
 import (
 	"fmt"
@@ -175,8 +175,7 @@ func Get() string {
 		Meta,
 	)
 	path := filepath.Join(filepath.Join(PathBase, "version"), "version.go")
-	if e = ioutil.WriteFile(path, []byte(versionFileOut), 0666); E.Chk(e) {
+	if e = ioutil.WriteFile(path, []byte(versionFileOut), 0666); log.E.Chk(e) {
 	}
-	// I.Ln("updated version.go written")
 	return
 }

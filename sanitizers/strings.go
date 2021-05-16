@@ -20,7 +20,7 @@ func StringType(typ, input string, defaultPort int) (cleaned string, e error) {
 	switch typ {
 	case NetAddress:
 		var h, p string
-		if h, p, e = net.SplitHostPort(input); E.Chk(e) {
+		if h, p, e = net.SplitHostPort(input); log.E.Chk(e) {
 			e = fmt.Errorf("address value '%s' not a valid address", input)
 			return
 		}
@@ -42,10 +42,10 @@ func StringType(typ, input string, defaultPort int) (cleaned string, e error) {
 			if e != nil || homeDir == "" {
 				homeDir = os.Getenv("HOME")
 			}
-			
+
 			input = strings.Replace(input, "~", homeDir, 1)
 		}
-		if cleaned, e = filepath.Abs(filepath.Clean(input)); E.Chk(e) {
+		if cleaned, e = filepath.Abs(filepath.Clean(input)); log.E.Chk(e) {
 		}
 	case Directory:
 		if strings.HasPrefix(input, "~") {
@@ -60,10 +60,10 @@ func StringType(typ, input string, defaultPort int) (cleaned string, e error) {
 			if e != nil || homeDir == "" {
 				homeDir = os.Getenv("HOME")
 			}
-			
+
 			input = strings.Replace(input, "~", homeDir, 1)
 		}
-		if cleaned, e = filepath.Abs(filepath.Clean(input)); E.Chk(e) {
+		if cleaned, e = filepath.Abs(filepath.Clean(input)); log.E.Chk(e) {
 		}
 	default:
 		cleaned = input

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/p9c/opts/meta"
-	"github.com/p9c/opts/opt"
-	"github.com/p9c/opts/sanitizers"
+	"github.com/cybriq/opts/meta"
+	"github.com/cybriq/opts/opt"
+	"github.com/cybriq/opts/sanitizers"
 )
 
 // Opt stores a string configuration value
@@ -72,17 +72,17 @@ func (x *Opt) ReadInput(input string) (o opt.Option, e error) {
 				continue
 			}
 		}
-		if E.Chk(e) {
+		if log.E.Chk(e) {
 			return
 		}
 		input = matched
 	} else {
 		var cleaned string
-		if cleaned, e = sanitizers.StringType(x.Data.Type, input, x.Data.DefaultPort); E.Chk(e) {
+		if cleaned, e = sanitizers.StringType(x.Data.Type, input, x.Data.DefaultPort); log.E.Chk(e) {
 			return
 		}
 		if cleaned != "" {
-			I.Ln("setting value for", x.Data.Name, cleaned)
+			log.I.Ln("setting value for", x.Data.Name, cleaned)
 			input = cleaned
 		}
 	}
@@ -128,22 +128,22 @@ func (x *Opt) Empty() bool {
 func (x *Opt) Bytes() []byte {
 	byt := x.Value.Load().([]byte)
 	o := make([]byte, len(byt))
-	copy(o,byt)
+	copy(o, byt)
 	return o
 }
 
 // Zero the bytes
-func(x *Opt) Zero() {
+func (x *Opt) Zero() {
 	byt := x.Value.Load().([]byte)
 	for i := range byt {
-		byt[i]=0
+		byt[i] = 0
 	}
 	x.Value.Store(byt)
 }
 
 func (x *Opt) runHooks(s []byte) (e error) {
 	for i := range x.hook {
-		if e = x.hook[i](s); E.Chk(e) {
+		if e = x.hook[i](s); log.E.Chk(e) {
 			break
 		}
 	}
@@ -152,7 +152,7 @@ func (x *Opt) runHooks(s []byte) (e error) {
 
 // Set the value stored
 func (x *Opt) Set(s string) (e error) {
-	if e = x.runHooks([]byte(s)); !E.Chk(e) {
+	if e = x.runHooks([]byte(s)); !log.E.Chk(e) {
 		x.Value.Store([]byte(s))
 	}
 	return
@@ -160,7 +160,7 @@ func (x *Opt) Set(s string) (e error) {
 
 // SetBytes sets the string from bytes
 func (x *Opt) SetBytes(s []byte) (e error) {
-	if e = x.runHooks(s); !E.Chk(e) {
+	if e = x.runHooks(s); !log.E.Chk(e) {
 		x.Value.Store(s)
 	}
 	return

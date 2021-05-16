@@ -7,8 +7,8 @@ import (
 
 	uberatomic "go.uber.org/atomic"
 
-	"github.com/p9c/opts/meta"
-	"github.com/p9c/opts/opt"
+	"github.com/cybriq/opts/meta"
+	"github.com/cybriq/opts/opt"
 )
 
 // Opt stores an boolean configuration value
@@ -98,13 +98,13 @@ func (x *Opt) False() bool {
 
 // Flip changes the value to its opposite
 func (x *Opt) Flip() {
-	I.Ln("flipping", x.Name(), "to", !x.value.Load())
+	log.I.Ln("flipping", x.Name(), "to", !x.value.Load())
 	x.value.Toggle()
 }
 
 func (x *Opt) runHooks(b bool) (e error) {
 	for i := range x.hook {
-		if e = x.hook[i](b); E.Chk(e) {
+		if e = x.hook[i](b); log.E.Chk(e) {
 			break
 		}
 	}
@@ -113,8 +113,8 @@ func (x *Opt) runHooks(b bool) (e error) {
 
 // Set changes the value currently stored
 func (x *Opt) Set(b bool) (e error) {
-	if e = x.runHooks(b); E.Chk(e) {
-		I.Ln("setting", x.Name(), "to", b)
+	if e = x.runHooks(b); log.E.Chk(e) {
+		log.I.Ln("setting", x.Name(), "to", b)
 		x.value.Store(b)
 	}
 	return
@@ -146,7 +146,7 @@ func (x *Opt) MarshalJSON() (b []byte, e error) {
 // UnmarshalJSON decodes a JSON representation of a Opt
 func (x *Opt) UnmarshalJSON(data []byte) (e error) {
 	v := x.value.Load()
-	if e = json.Unmarshal(data, &v); E.Chk(e) {
+	if e = json.Unmarshal(data, &v); log.E.Chk(e) {
 		return
 	}
 	e = x.Set(v)
