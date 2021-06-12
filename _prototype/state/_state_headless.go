@@ -18,7 +18,7 @@ import (
 
 	"github.com/cybriq/qu"
 
-	"go.uber.org/atomic"
+	"github.com/cybriq/atomic"
 
 	"github.com/p9c/p9/cmd/node/active"
 	"github.com/p9c/p9/pkg/chainrpc"

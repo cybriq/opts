@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"go.uber.org/atomic"
+	"github.com/cybriq/atomic"
 
 	"github.com/p9c/p9/pkg/chaincfg"
 	"github.com/p9c/p9/pkg/chainclient"

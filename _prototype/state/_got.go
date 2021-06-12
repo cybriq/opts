@@ -15,7 +15,7 @@ import (
 
 	"github.com/btcsuite/go-socks/socks"
 	"github.com/cybriq/qu"
-	"go.uber.org/atomic"
+	"github.com/cybriq/atomic"
 
 	"github.com/p9c/p9/pkg/log"
 	"github.com/p9c/p9/cmd/node/active"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	uberatomic "go.uber.org/atomic"
+	uberatomic "github.com/cybriq/atomic"
 
 	"github.com/cybriq/opts/meta"
 	"github.com/cybriq/opts/opt"

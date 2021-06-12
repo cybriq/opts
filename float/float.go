@@ -10,7 +10,7 @@ import (
 	"github.com/cybriq/opts/opt"
 	"github.com/cybriq/opts/sanitizers"
 
-	uberatomic "go.uber.org/atomic"
+	uberatomic "github.com/cybriq/atomic"
 )
 
 // Opt stores an float64 configuration value
